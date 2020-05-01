@@ -93,7 +93,7 @@ class Register extends AppCompatActivity {
 
     }
 
-    public void registerUserInFirebase (User user){
+    public void registerUserInFirebase (final User user){
 
             mAuth = FirebaseConfig.getFirebaseAuth ();
             mAuth.createUserWithEmailAndPassword (user.getEmail (),user.getSenha ()).addOnCompleteListener (new OnCompleteListener<AuthResult> () {
@@ -101,7 +101,10 @@ class Register extends AppCompatActivity {
                 public
                 void onComplete (@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful ()){
-                        Toast.makeText (Register.this, "User registered successfully",Toast.LENGTH_LONG).show ();
+                       String idUser = task.getResult ().getUser ().getUid ();
+                       user.setId (idUser);
+                       user.salvar ();
+
                     }
                 }
             });

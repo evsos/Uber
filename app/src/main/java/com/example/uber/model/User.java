@@ -1,5 +1,9 @@
 package com.example.uber.model;
 
+import com.example.uber.config.FirebaseConfig;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
+
 public
 class User {
 
@@ -11,6 +15,12 @@ class User {
 
     public
     User () {
+    }
+
+    public void salvar(){
+        DatabaseReference firebaseRef = FirebaseConfig.getFirebaseDatabase ();
+        DatabaseReference users = firebaseRef.child ("users" ).child (getId ());
+        users.setValue (this);
     }
 
     public
@@ -52,6 +62,7 @@ class User {
         this.email = email;
     }
 
+    @Exclude
     public
     String getSenha () {
         return senha;
