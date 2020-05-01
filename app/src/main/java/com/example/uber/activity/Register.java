@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.uber.R;
 import com.example.uber.config.FirebaseConfig;
+import com.example.uber.helper.UsuarioFirebase;
 import com.example.uber.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -106,25 +107,29 @@ class Register extends AppCompatActivity {
                 public
                 void onComplete (@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful ()){
-                       String idUser = task.getResult ().getUser ().getUid ();
-                       user.setId (idUser);
-                       user.salvar ();
+                       try {
+                           String idUser = task.getResult ().getUser ().getUid ();
+                           user.setId (idUser);
+                           user.salvar ();
 
-                       //actualizar nome no user profile
-                       //salvarNomeNoUserProfile();
+                           //actualizar nome no user profile
+                           UsuarioFirebase.actualizarNomeUsuario(user.getNome ());
 
-                       //redireccionar um user com base no seu tipo, se o user for um passageiro, direccionar logo para a maps activity, se nao, direccionar para
-                        //a activity requisicoes
 
-                        if ( verifyUserType() == "P"){
-                            startActivity (new Intent (Register.this, MapsActivity.class));
-                            finish ();
-                            Toast.makeText (Register.this, "User registered successfully as a passenger",Toast.LENGTH_LONG).show ();
-                        }else{
-                            startActivity (new Intent (Register.this, RequestsActivity.class));
-                            finish ();
-                            Toast.makeText (Register.this, "User registered successfully as a driver",Toast.LENGTH_LONG).show ();
-                        }
+                           //redireccionar um user com base no seu tipo, se o user for um passageiro, direccionar logo para a maps activity, se nao, direccionar para
+                           //a activity requisicoes
+
+                           if ( verifyUserType() == "P"){
+                               startActivity (new Intent (Register.this, MapsActivity.class));
+                               finish ();
+                               Toast.makeText (Register.this, "User registered successfully as a passenger",Toast.LENGTH_LONG).show ();
+                           }else{
+                               startActivity (new Intent (Register.this, RequestsActivity.class));
+                               finish ();
+                               Toast.makeText (Register.this, "User registered successfully as a driver",Toast.LENGTH_LONG).show ();
+                           }
+
+                       } catch (Exception e){e.printStackTrace ();}
 
                     }else{
                         String excecao="";
