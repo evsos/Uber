@@ -7,7 +7,7 @@ android {
         enabled = true
     }
 
-    
+
     defaultConfig {
         applicationId "com.example.uber"
         minSdkVersion 23

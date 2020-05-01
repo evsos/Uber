@@ -1,5 +1,7 @@
 package com.example.uber.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +17,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -104,6 +109,39 @@ class Register extends AppCompatActivity {
                        String idUser = task.getResult ().getUser ().getUid ();
                        user.setId (idUser);
                        user.salvar ();
+
+                       //actualizar nome no user profile
+                       //salvarNomeNoUserProfile();
+
+                       //redireccionar um user com base no seu tipo, se o user for um passageiro, direccionar logo para a maps activity, se nao, direccionar para
+                        //a activity requisicoes
+
+                        if ( verifyUserType() == "P"){
+                            startActivity (new Intent (Register.this, MapsActivity.class));
+                            finish ();
+                            Toast.makeText (Register.this, "User registered successfully as a passenger",Toast.LENGTH_LONG).show ();
+                        }else{
+                            startActivity (new Intent (Register.this, RequestsActivity.class));
+                            finish ();
+                            Toast.makeText (Register.this, "User registered successfully as a driver",Toast.LENGTH_LONG).show ();
+                        }
+
+                    }else{
+                        String excecao="";
+                        try {
+                            throw task.getException ();
+                        } catch (FirebaseAuthWeakPasswordException e) {
+                            excecao="Register failed, please type a stronger password";
+                        } catch (FirebaseAuthInvalidCredentialsException e) {
+                            excecao="Please insert a valid email";
+                        } catch (FirebaseAuthUserCollisionException e) {
+                            excecao="Register failed, that account is already registered";
+                        } catch (Exception e) {
+                            excecao="Error registering user"+ e.getMessage ();
+                            e.printStackTrace ();
+                        }
+                        Toast.makeText (Register.this,excecao,Toast.LENGTH_LONG).show ();
+
 
                     }
                 }
