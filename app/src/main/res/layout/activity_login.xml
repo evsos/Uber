@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <EditText
-            android:id="@+id/etMail"
+            android:id="@+id/etLoginMail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
@@ -26,7 +26,7 @@
             android:inputType="textEmailAddress" />
 
         <EditText
-            android:id="@+id/etPass"
+            android:id="@+id/etLoginPass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
@@ -40,6 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@color/btnLogin"
+            android:onClick="validarLoginUsuario"
             android:text="login"
             android:textColor="@color/common_google_signin_btn_text_dark_default" />
     </LinearLayout>

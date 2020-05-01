@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.uber.R;
+import com.example.uber.helper.UsuarioFirebase;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -35,10 +36,18 @@ class MainActivity extends AppCompatActivity {
     }
 
     public void abrirTelaLogin(View view) {
-        startActivity (new Intent(this, Register.class));
+        startActivity (new Intent(this, Login.class));
     }
 
     public void abrirTelaCadastro (View view){
         startActivity (new Intent(this, Register.class));
+    }
+
+    @Override
+    protected
+    void onStart () {
+        super.onStart ();
+
+        UsuarioFirebase.redirectLoggedInUser (MainActivity.this);
     }
 }
