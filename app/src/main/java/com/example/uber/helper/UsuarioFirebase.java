@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.uber.activity.MapsActivity;
-import com.example.uber.activity.RequestsActivity;
+import com.example.uber.activities.PassageiroActivity;
+import com.example.uber.activities.RequestsActivity;
 import com.example.uber.config.FirebaseConfig;
 import com.example.uber.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -67,7 +67,7 @@ class UsuarioFirebase {
                     User user = dataSnapshot.getValue (User.class);
                     String userType = user.getTipo ();
                     if (userType.equals ("P")) {
-                        activity.startActivity (new Intent (activity, MapsActivity.class));
+                        activity.startActivity (new Intent (activity, PassageiroActivity.class));
                         Toast.makeText (activity, "Logged in sucessfully as a passenger", Toast.LENGTH_LONG).show ();
 
                     } else {

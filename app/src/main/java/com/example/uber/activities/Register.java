@@ -1,6 +1,5 @@
-package com.example.uber.activity;
+package com.example.uber.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -120,7 +119,7 @@ class Register extends AppCompatActivity {
                            //a activity requisicoes
 
                            if ( verifyUserType() == "P"){
-                               startActivity (new Intent (Register.this, MapsActivity.class));
+                               startActivity (new Intent (Register.this, PassageiroActivity.class));
                                finish ();
                                Toast.makeText (Register.this, "User registered successfully as a passenger",Toast.LENGTH_LONG).show ();
                            }else{

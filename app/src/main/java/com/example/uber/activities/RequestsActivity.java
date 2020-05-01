@@ -1,4 +1,4 @@
-package com.example.uber.activity;
+package com.example.uber.activities;
 
 import android.os.Bundle;
 
