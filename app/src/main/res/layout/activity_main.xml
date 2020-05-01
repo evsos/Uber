@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fundo"
+    tools:context=".activity.MainActivity">
+
+    <ImageView
+        android:id="@+id/ivUber"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_marginTop="258dp"
+        android:layout_marginBottom="232dp"
+        app:layout_constraintBottom_toTopOf="@+id/rLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo" />
+
+    <RelativeLayout
+        android:id="@+id/rLayout"
+        android:layout_width="324dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="41dp"
+        android:layout_marginEnd="41dp"
+        android:layout_marginBottom="59dp"
+        android:background="@android:color/white"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivUber">
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="151dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginBottom="6dp"
+            android:background="@color/btnLogin"
+            android:onClick="abrirTelaLogin"
+            android:text="Login"
+            android:textColor="@android:color/background_light" />
+
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="164dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_toRightOf="@id/btnLogin"
+            android:background="@color/btnRegister"
+            android:onClick="abrirTelaCadastro"
+            android:text="register"
+            android:textColor="@color/common_google_signin_btn_text_dark_default" />
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

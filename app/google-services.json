@@ -1,0 +1,77 @@
+{
+  "project_info": {
+    "project_number": "259990442848",
+    "firebase_url": "https://uberclone-74f68.firebaseio.com",
+    "project_id": "uberclone-74f68",
+    "storage_bucket": "uberclone-74f68.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:259990442848:android:2c696ee817d5f80a40c405",
+        "android_client_info": {
+          "package_name": "com.example.uber"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "259990442848-6lnf8hmfvl1ep8o252q0uqginq1ls9qq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB30_9Gz2W7eVc2COde6PSTHAwyVT0i3ek"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "259990442848-6lnf8hmfvl1ep8o252q0uqginq1ls9qq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:259990442848:android:e52d36d384de660540c405",
+        "android_client_info": {
+          "package_name": "com.inacio.uber"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "259990442848-nhqi5da9rk935dr7nq8oqemm864g8stc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inacio.uber",
+            "certificate_hash": "5f38f23432111c4ecb53574e2162eb7010d99b5b"
+          }
+        },
+        {
+          "client_id": "259990442848-6lnf8hmfvl1ep8o252q0uqginq1ls9qq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB30_9Gz2W7eVc2COde6PSTHAwyVT0i3ek"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "259990442848-6lnf8hmfvl1ep8o252q0uqginq1ls9qq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

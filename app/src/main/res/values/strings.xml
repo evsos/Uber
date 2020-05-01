@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Uber</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name="titleLogin">Acessar minha conta</string>
+    <string name="titleRegister">Registar minha conta</string>
+
+</resources>
