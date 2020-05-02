@@ -17,7 +17,10 @@ import android.widget.EditText;
 
 import com.example.uber.R;
 import com.example.uber.config.FirebaseConfig;
+import com.example.uber.helper.UsuarioFirebase;
 import com.example.uber.model.Destino;
+import com.example.uber.model.Requisicao;
+import com.example.uber.model.User;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -44,6 +47,9 @@ class PassageiroActivity extends AppCompatActivity implements OnMapReadyCallback
     private LocationManager locationManager;
     private LocationListener locationListener;
     private EditText etDestination;
+    private LatLng localPassageiro;
+
+
 
 
 
@@ -78,10 +84,10 @@ class PassageiroActivity extends AppCompatActivity implements OnMapReadyCallback
                 double latitude = location.getLatitude ();
                 double longitude = location.getLongitude ();
 
-                LatLng myPlace = new LatLng ( latitude, longitude);
+                localPassageiro = new LatLng ( latitude, longitude);
                 mMap.clear ();
-                mMap.addMarker (new MarkerOptions ().position (myPlace).title ("my place").icon (BitmapDescriptorFactory.fromResource (R.drawable.usuario)));
-                mMap.moveCamera (CameraUpdateFactory.newLatLngZoom (myPlace, 19));
+                mMap.addMarker (new MarkerOptions ().position (localPassageiro).title ("my place").icon (BitmapDescriptorFactory.fromResource (R.drawable.usuario)));
+                mMap.moveCamera (CameraUpdateFactory.newLatLngZoom (localPassageiro, 19));
             }
 
             @Override
@@ -117,7 +123,7 @@ class PassageiroActivity extends AppCompatActivity implements OnMapReadyCallback
 
         if(addressDestino != null ){
 
-            Destino destino = new Destino();
+            final Destino destino = new Destino();
             destino.setCidade (addressDestino.getAdminArea());
             destino.setCep(addressDestino.getPostalCode());
             destino.setBairro(addressDestino.getSubLocality ());
@@ -133,14 +139,20 @@ class PassageiroActivity extends AppCompatActivity implements OnMapReadyCallback
             mensagem.append ("\nNúmero:"+destino.getNumero ());
             mensagem.append ("\nCep:"+destino.getCep ());
 
-            AlertDialog.Builder builder = new AlertDialog.Builder (this).setTitle ("Confirme seu endereco").setMessage (mensagem).setPositiveButton ("Confirmar", new DialogInterface.OnClickListener () {
+            AlertDialog.Builder builder = new AlertDialog.Builder (this);
+            builder.setTitle ("Confirme seu endereco");
+            builder.setMessage (mensagem);
+            builder.setPositiveButton ("Confirmar", new DialogInterface.OnClickListener () {
                 @Override
                 public
                 void onClick (DialogInterface dialog, int which) {
 
-                    //salvar requisicao
+                    //salvar a requisicao
+                    salvarRequisicao (destino);
+
                 }
-            }).setNegativeButton ("Cancelar", new DialogInterface.OnClickListener () {
+            });
+            builder.setNegativeButton ("Cancelar", new DialogInterface.OnClickListener () {
                 @Override
                 public
                 void onClick (DialogInterface dialog, int which) {
@@ -154,6 +166,23 @@ class PassageiroActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     }
+
+    private void salvarRequisicao(Destino destino){
+
+        Requisicao requisicao = new Requisicao ();
+        requisicao.setDestino (destino);
+
+        User usuarioPassageiro = UsuarioFirebase.getDadosUsuarioLogado();
+
+        usuarioPassageiro.setLatitude (String.valueOf (localPassageiro.latitude));
+        usuarioPassageiro.setLongitude (String.valueOf (localPassageiro.longitude));
+
+        requisicao.setPassageiro (usuarioPassageiro);
+        requisicao.setStatus (Requisicao.STATUS_AGUARDANDO);
+
+        requisicao.salvar();
+    }
+
 
     private Address recuperarEndereco(String endereco){
         Geocoder geocoder = new Geocoder (this, Locale.getDefault ());
@@ -201,6 +230,7 @@ private void inicializarComponentes(){
     //inicializar componentes
 
     etDestination =findViewById (R.id.etDestination);
+
 
 
     auth = FirebaseConfig.getFirebaseAuth ();

@@ -12,6 +12,8 @@ class User {
     private String email;
     private String senha;
     private String tipo;
+    private String Latitude;
+    private String Longitude;
 
     public
     User () {
@@ -21,15 +23,6 @@ class User {
         DatabaseReference firebaseRef = FirebaseConfig.getFirebaseDatabase ();
         DatabaseReference users = firebaseRef.child ("users" ).child (getId ());
         users.setValue (this);
-    }
-
-    public
-    User (String id, String nome, String email, String senha, String tipo) {
-        this.id = id;
-        this.nome = nome;
-        this.email = email;
-        this.senha = senha;
-        this.tipo = tipo;
     }
 
     public
@@ -81,5 +74,25 @@ class User {
     public
     void setTipo (String tipo) {
         this.tipo = tipo;
+    }
+
+    public
+    String getLatitude () {
+        return Latitude;
+    }
+
+    public
+    void setLatitude (String latitude) {
+        Latitude = latitude;
+    }
+
+    public
+    String getLongitude () {
+        return Longitude;
+    }
+
+    public
+    void setLongitude (String longitude) {
+        Longitude = longitude;
     }
 }
