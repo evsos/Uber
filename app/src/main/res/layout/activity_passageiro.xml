@@ -57,11 +57,12 @@
 
     <Button
         android:id="@+id/buttnCallUber"
-        android:theme="@style/botaoPadrao"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:onClick="callUber"
         android:text="call Uber driver"
-        android:layout_gravity="bottom"/>
+        android:theme="@style/botaoPadrao" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
