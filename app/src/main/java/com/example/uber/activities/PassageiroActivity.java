@@ -102,10 +102,9 @@ class PassageiroActivity extends AppCompatActivity implements OnMapReadyCallback
                 switch(requisicao.getStatus ()){
                     case Requisicao.STATUS_AGUARDANDO:
                         linearLayoutDestino.setVisibility (View.GONE);
-                        btnCallUber.setText ("CancelarUber");
+                        btnCallUber.setText ("Cancelar Requisicao de Uber");
                         uberChamado=true;
                         break;
-                        //commit test 2
                 }
                 }else{
 
