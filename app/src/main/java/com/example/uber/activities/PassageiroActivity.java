@@ -72,8 +72,7 @@ class PassageiroActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate (savedInstanceState);
         setContentView (R.layout.activity_passageiro);
 
-        //Configuracoes iniciais
-        firebaseRef=FirebaseConfig.getFirebaseDatabase ();
+
 
         inicializarComponentes ();
 
@@ -95,6 +94,9 @@ class PassageiroActivity extends AppCompatActivity implements OnMapReadyCallback
                    lista.add(ds.getValue (Requisicao.class));
                 }
             Collections.reverse (lista);
+                if (lista!=null && lista.size()>0){
+
+
                 requisicao=lista.get (0);
 
                 switch(requisicao.getStatus ()){
@@ -104,6 +106,9 @@ class PassageiroActivity extends AppCompatActivity implements OnMapReadyCallback
                         uberChamado=true;
                         break;
                         //commit test 2
+                }
+                }else{
+
                 }
             }
 
@@ -286,6 +291,12 @@ class PassageiroActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
 private void inicializarComponentes(){
+
+    //Configuracoes iniciais
+    auth = FirebaseConfig.getFirebaseAuth ();
+    firebaseRef=FirebaseConfig.getFirebaseDatabase ();
+
+
     Toolbar toolbar = findViewById (R.id.toolbar);
     toolbar.setTitle ("Iniciar uma viagem");
     setSupportActionBar (toolbar);
@@ -298,7 +309,7 @@ private void inicializarComponentes(){
 
 
 
-    auth = FirebaseConfig.getFirebaseAuth ();
+
 
 
     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager ().findFragmentById (R.id.map);
