@@ -50,6 +50,17 @@ class Requisicao {
         requisicao.updateChildren (objecto);
     }
 
+    public void actualizarStatus(){
+        DatabaseReference firebaseRef = FirebaseConfig.getFirebaseDatabase ();
+        DatabaseReference requisicoes = firebaseRef.child ("requisicoes");
+
+        DatabaseReference requisicao=requisicoes.child(getId ());
+        Map objecto = new HashMap ();
+        objecto.put("status",getStatus ());
+
+        requisicao.updateChildren (objecto);
+    }
+
     public
     String getId () {
         return id;

@@ -109,6 +109,7 @@ class PassageiroActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
                 }else{
 
+
                 }
             }
 
@@ -233,7 +234,10 @@ class PassageiroActivity extends AppCompatActivity implements OnMapReadyCallback
 
             }
         }else {
+
+            //cancelar requisicao
             uberChamado=false;
+
         }
 
 

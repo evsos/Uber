@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -17,11 +18,17 @@ import com.example.uber.config.FirebaseConfig;
 import com.example.uber.helper.UsuarioFirebase;
 import com.example.uber.model.Requisicao;
 import com.example.uber.model.User;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -131,20 +138,74 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
     private void requisicaoCaminho(){
         btnAceitarCorrida.setText ("A caminho do passageiro");
 
-        //exibir o motorista e o passageiro centrados na mesma tela
+
 
         //exibe marcador do motorista
         adicionarMarcadorMotorista(localMotorista,motorista.getNome ());
 
         // exibe marcador do passageiro
-
         adicionarMarcadorPassageiro (localPassageiro,passageiro.getNome ());
 
-        //centralizar os dois marcadores
-
+        //centralizar os dois marcadores - exibe os 2 marcadores centrados na mesma tela
         centralizarDoisMarcadores(marcadorMotorista,marcadorPassageiro);
+
+        //Inicia monitoramento do motorista/passageiro
+        iniciarMonitoramentoCorrida (passageiro,motorista);
+
     }
 
+    private void iniciarMonitoramentoCorrida(User p, User m){
+        //inicializar Geofire
+        DatabaseReference localUsuario = FirebaseConfig.getFirebaseDatabase ().child ("local_usuario");
+        GeoFire geoFire=new GeoFire (localUsuario);
+
+        //adicionar circulo no passageiro, quando o carro se aproximar do passageiro, seremos notificados
+        final Circle circulo = mMap.addCircle (new CircleOptions ().center (localPassageiro).radius (50).fillColor(Color.argb (80, 255, 153, 0))
+                                                 .strokeColor (Color.argb (190,255,152,0)));
+
+        final GeoQuery geoQuery = geoFire.queryAtLocation (new GeoLocation (localPassageiro.latitude, localPassageiro.longitude), 0.05);
+        geoQuery.addGeoQueryEventListener (new GeoQueryEventListener () {
+            @Override
+            public
+            void onKeyEntered (String key, GeoLocation location) {
+                //criterios para um marcador que entrou no circulo
+                if (key.equals (motorista.getId ())) {
+                   //altera status da requisicao
+                    requisicao.setStatus (Requisicao.STATUS_VIAGEM);
+                    requisicao.actualizarStatus ();
+
+                    //remove listener
+                    geoQuery.removeAllListeners ();
+                    circulo.remove ();
+                }
+            }
+
+            @Override
+            public
+            void onKeyExited (String key) {
+
+            }
+
+            @Override
+            public
+            void onKeyMoved (String key, GeoLocation location) {
+
+            }
+
+            @Override
+            public
+            void onGeoQueryReady () {
+
+            }
+
+            @Override
+            public
+            void onGeoQueryError (DatabaseError error) {
+
+            }
+        });
+
+    }
 
     private void adicionarMarcadorMotorista(LatLng localizacao, String titulo){
 
