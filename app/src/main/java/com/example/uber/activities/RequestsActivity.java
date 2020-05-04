@@ -151,9 +151,11 @@ class RequestsActivity extends AppCompatActivity {
                     rvRequisicoes.setVisibility (View.GONE);
                 }
 
+                listaRequisicoes.clear();
                 for(DataSnapshot ds: dataSnapshot.getChildren ()){
                     Requisicao requisicao = ds.getValue (Requisicao.class);
                     listaRequisicoes.add(requisicao);
+
                 }
                 adapter.notifyDataSetChanged ();
             }
