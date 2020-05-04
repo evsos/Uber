@@ -2,6 +2,7 @@ package com.example.uber.activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -9,9 +10,11 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.uber.R;
 import com.example.uber.config.FirebaseConfig;
+import com.example.uber.helper.UsuarioFirebase;
 import com.example.uber.model.Requisicao;
 import com.example.uber.model.User;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -49,6 +52,9 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
     private DatabaseReference firebaseRef;
     private Marker  marcadorMotorista;
     private Marker marcadorPassageiro;
+    private String statusRequisicao;
+    private Boolean requisicaoActiva;
+
 
 
     @Override
@@ -63,8 +69,9 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
         if (getIntent().getExtras ().containsKey ("idRequisicao") && getIntent ().getExtras ().containsKey ("motorista")){
             Bundle extras = getIntent ().getExtras ();
             motorista = (User) extras.getSerializable ("motorista");
+            localMotorista= new LatLng (Double.parseDouble (motorista.getLatitude ()),Double.parseDouble (motorista.getLongitude ()));
             idRequisicao =extras.getString(("idRequisicao"));
-
+            requisicaoActiva =extras.getBoolean(("requisicaoActiva"));
             verificaStatusRequisicao();
         }
     }
@@ -81,17 +88,14 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
                 //Recupera requisicao
                 requisicao = dataSnapshot.getValue (Requisicao.class);
 
+                if (requisicao!=null){
                 passageiro=requisicao.getPassageiro ();
 
                 localPassageiro=new LatLng (Double.parseDouble (passageiro.getLatitude ()),Double.parseDouble (passageiro.getLongitude ()));
 
-                switch(requisicao.getStatus ()){
-                    case Requisicao.STATUS_AGUARDANDO: requisicaoAguardando();
-                        break;
-                    case Requisicao.STATUS_CAMINHO:requisicaoCaminho();
-                        break;
-
-                }
+                statusRequisicao=requisicao.getStatus ();
+                alteraInterfaceConsoanteStatusRequisicao (statusRequisicao);
+            }
             }
 
             @Override
@@ -101,8 +105,27 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
         });
     }
 
+    private void alteraInterfaceConsoanteStatusRequisicao(String status){
+
+        switch(status){
+            case Requisicao.STATUS_AGUARDANDO: requisicaoAguardando();
+                break;
+            case Requisicao.STATUS_CAMINHO:requisicaoCaminho();
+                break;
+
+        }
+
+
+
+    }
+
     private void requisicaoAguardando(){
         btnAceitarCorrida.setText ("Aceitar corrida");
+
+        adicionarMarcadorMotorista(localMotorista,motorista.getNome ());
+
+        mMap.moveCamera (CameraUpdateFactory.newLatLngZoom (localMotorista,20));
+
     }
 
     private void requisicaoCaminho(){
@@ -201,9 +224,11 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
                 double longitude = location.getLongitude ();
 
                 localMotorista = new LatLng ( latitude, longitude);
-                mMap.clear ();
-                mMap.addMarker (new MarkerOptions ().position (localMotorista).title ("my place").icon (BitmapDescriptorFactory.fromResource (R.drawable.carro)));
-                mMap.moveCamera (CameraUpdateFactory.newLatLngZoom (localMotorista, 19));
+
+                UsuarioFirebase.actualizarDadosLocalizacao (latitude,longitude);
+
+                alteraInterfaceConsoanteStatusRequisicao (statusRequisicao);
+
             }
 
             @Override
@@ -248,4 +273,17 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
             mapFragment.getMapAsync (this);
         }
 
+
+    @Override
+    public
+    boolean onSupportNavigateUp () {
+        if (requisicaoActiva){
+            Toast.makeText (CorridaActivity.this,"Necessario encerrar a requisicao actual!",Toast.LENGTH_LONG).show ();
+        }else{
+            Intent i = new Intent(CorridaActivity.this,RequestsActivity.class);
+            startActivity (i);
+        }
+
+        return false;
+    }
 }

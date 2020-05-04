@@ -60,9 +60,50 @@ class RequestsActivity extends AppCompatActivity {
 
         //recuperar localizacao do usuario
         getUserLocation ();
+    }
 
+    @Override
+    protected
+    void onStart () {
+        super.onStart ();
+
+        verificaStatusRequisicao ();
+    }
+
+    private void verificaStatusRequisicao(){
+
+        User usuarioLogado = UsuarioFirebase.getDadosUsuarioLogado ();
+        DatabaseReference firebaseRef = FirebaseConfig.getFirebaseDatabase ();
+
+        DatabaseReference requisicoes = firebaseRef.child ("requisicoes");
+
+        Query requisicoesPesquisa = requisicoes.orderByChild ("motorista/id").equalTo (usuarioLogado.getId ());
+
+        requisicoesPesquisa.addListenerForSingleValueEvent (new ValueEventListener () {
+            @Override
+            public
+            void onDataChange (@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds: dataSnapshot.getChildren ()){
+                    Requisicao requisicao=ds.getValue (Requisicao.class);
+                    if(requisicao.getStatus ().equals (Requisicao.STATUS_CAMINHO) || requisicao.getStatus ().equals (Requisicao.STATUS_VIAGEM)){
+                    //fazer com que o usuario va para a corrida activity
+                        abrirTelaCorrida (requisicao.getId (),motorista,true);
+
+
+                    }
+                }
+            }
+
+            @Override
+            public
+            void onCancelled (@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
+
+
 
     @Override
     public
@@ -83,8 +124,18 @@ class RequestsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected (item);
     }
 
-    private
-    void inicializarComponentes () {
+    private void abrirTelaCorrida(String idRequisicao,User motorista, boolean requisicaoActiva){
+
+        Intent i = new Intent (RequestsActivity.this, CorridaActivity.class);
+        i.putExtra ("idRequisicao",idRequisicao);
+        i.putExtra ("motorista",motorista);
+        i.putExtra ("requisicaoActiva",requisicaoActiva);
+        startActivity (i);
+
+    }
+
+
+    private void inicializarComponentes () {
 
         //Configuracoes iniciais
         motorista = UsuarioFirebase.getDadosUsuarioLogado();
@@ -110,10 +161,8 @@ class RequestsActivity extends AppCompatActivity {
             public
             void onItemClick (View view, int position) {
                 Requisicao requisicao = listaRequisicoes.get (position);
-                Intent i = new Intent (RequestsActivity.this, CorridaActivity.class);
-                i.putExtra ("idRequisicao",requisicao.getId ());
-                i.putExtra ("motorista",motorista);
-                startActivity (i);
+
+                abrirTelaCorrida (requisicao.getId (),motorista,false);
 
             }
 
@@ -181,6 +230,10 @@ class RequestsActivity extends AppCompatActivity {
 
                 String latitude = String.valueOf (location.getLatitude ());
                 String longitude = String.valueOf (location.getLongitude ());
+
+                //actualizar geofire
+                UsuarioFirebase.actualizarDadosLocalizacao (location.getLatitude (), location.getLongitude ());
+
 
                 if(!latitude.isEmpty () && !longitude.isEmpty ()){
                     motorista.setLatitude (latitude);

@@ -143,6 +143,12 @@ class PassageiroActivity extends AppCompatActivity implements OnMapReadyCallback
                 double longitude = location.getLongitude ();
 
                 localPassageiro = new LatLng ( latitude, longitude);
+
+                //actualizar geofire
+                UsuarioFirebase.actualizarDadosLocalizacao (latitude, longitude);
+
+
+
                 mMap.clear ();
                 mMap.addMarker (new MarkerOptions ().position (localPassageiro).title ("my place").icon (BitmapDescriptorFactory.fromResource (R.drawable.usuario)));
                 mMap.moveCamera (CameraUpdateFactory.newLatLngZoom (localPassageiro, 19));
@@ -171,6 +177,7 @@ class PassageiroActivity extends AppCompatActivity implements OnMapReadyCallback
             locationManager.requestLocationUpdates (LocationManager.GPS_PROVIDER, 10000, 10, locationListener);
         }
     }
+
 
     public void callUber (View view){
 

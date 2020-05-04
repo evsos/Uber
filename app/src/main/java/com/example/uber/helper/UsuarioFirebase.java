@@ -9,6 +9,8 @@ import com.example.uber.activities.PassageiroActivity;
 import com.example.uber.activities.RequestsActivity;
 import com.example.uber.config.FirebaseConfig;
 import com.example.uber.model.User;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -95,5 +97,27 @@ class UsuarioFirebase {
 
 
         }
+    }
+
+    public static void actualizarDadosLocalizacao(double lat, double lon){
+
+        //define nó de local de usuario
+        DatabaseReference localUsuario=FirebaseConfig.getFirebaseDatabase ().child ("local_usuario");
+        GeoFire geofire = new GeoFire(localUsuario);
+
+        //recupera dados do usuario logado
+        User usuarioLogado = UsuarioFirebase.getDadosUsuarioLogado ();
+
+        //configura localizacao do usuario
+        geofire.setLocation(usuarioLogado.getId (), new GeoLocation (lat, lon), new GeoFire.CompletionListener () {
+            @Override
+            public
+            void onComplete (String key, DatabaseError error) {
+                    if (error != null){
+                        Log.d("Erro","Erro ao salvar localizacao");
+                    }
+            }
+        });
+
     }
 }
