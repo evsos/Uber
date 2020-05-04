@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -298,6 +299,7 @@ private void inicializarComponentes(){
 
     Toolbar toolbar = findViewById (R.id.toolbar);
     toolbar.setTitle ("Iniciar uma viagem");
+    toolbar.setTitleTextColor(Color.WHITE);
     setSupportActionBar (toolbar);
 
     //inicializar componentes
