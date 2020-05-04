@@ -4,8 +4,9 @@ import com.example.uber.config.FirebaseConfig;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 
-public
-class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
     private String id;
     private String nome;

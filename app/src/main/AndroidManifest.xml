@@ -18,9 +18,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".activities.CorridaActivity"
+            android:label="@string/title_activity_corrida"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activities.RequestsActivity"/>
+        <activity
             android:name=".activities.PassageiroActivity"
             android:label="@string/title_activity_passageiro"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.RequestsActivity" />
         <activity
             android:name=".activities.Register"
@@ -48,7 +53,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
     </application>
 
 </manifest>

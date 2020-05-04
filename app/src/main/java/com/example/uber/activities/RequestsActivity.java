@@ -1,14 +1,23 @@
 package com.example.uber.activities;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.example.uber.R;
 import com.example.uber.adapter.RequisicoesAdapter;
 import com.example.uber.config.FirebaseConfig;
+import com.example.uber.helper.RecyclerItemClickListener;
 import com.example.uber.helper.UsuarioFirebase;
 import com.example.uber.model.Requisicao;
 import com.example.uber.model.User;
@@ -24,6 +33,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,6 +47,8 @@ class RequestsActivity extends AppCompatActivity {
     private List<Requisicao> listaRequisicoes = new ArrayList<> ();
     private RequisicoesAdapter adapter;
     private User motorista;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
 
     @Override
     protected
@@ -45,6 +57,9 @@ class RequestsActivity extends AppCompatActivity {
         setContentView (R.layout.activity_requests);
 
         inicializarComponentes ();
+
+        //recuperar localizacao do usuario
+        getUserLocation ();
 
 
     }
@@ -89,6 +104,32 @@ class RequestsActivity extends AppCompatActivity {
         rvRequisicoes.setHasFixedSize (true);
         rvRequisicoes.setAdapter(adapter);
 
+        //Adiciona evento de clique no recycler
+        rvRequisicoes.addOnItemTouchListener (new RecyclerItemClickListener (getApplicationContext (), rvRequisicoes, new RecyclerItemClickListener.OnItemClickListener () {
+            @Override
+            public
+            void onItemClick (View view, int position) {
+                Requisicao requisicao = listaRequisicoes.get (position);
+                Intent i = new Intent (RequestsActivity.this, CorridaActivity.class);
+                i.putExtra ("idRequisicao",requisicao.getId ());
+                i.putExtra ("motorista",motorista);
+                startActivity (i);
+
+            }
+
+            @Override
+            public
+            void onLongItemClick (View view, int position) {
+
+            }
+
+            @Override
+            public
+            void onItemClick (AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        }));
+
         recuperarRequisicoes();
     }
 
@@ -125,4 +166,52 @@ class RequestsActivity extends AppCompatActivity {
         });
 
     }
+
+    private
+    void getUserLocation () {
+
+        locationManager = (LocationManager) this.getSystemService (Context.LOCATION_SERVICE);
+
+        locationListener = new LocationListener () {
+            @Override
+            public
+            void onLocationChanged (Location location) {
+
+                String latitude = String.valueOf (location.getLatitude ());
+                String longitude = String.valueOf (location.getLongitude ());
+
+                if(!latitude.isEmpty () && !longitude.isEmpty ()){
+                    motorista.setLatitude (latitude);
+                    motorista.setLongitude (longitude);
+                    locationManager.removeUpdates (locationListener);
+
+                }
+                adapter.notifyDataSetChanged ();
+
+            }
+
+            @Override
+            public
+            void onStatusChanged (String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public
+            void onProviderEnabled (String provider) {
+
+            }
+
+            @Override
+            public
+            void onProviderDisabled (String provider) {
+
+            }
+        };
+
+        if (ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates (LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        }
+    }
+
 }
