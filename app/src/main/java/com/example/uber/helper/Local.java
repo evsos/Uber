@@ -4,8 +4,9 @@ import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public
-class Local {
+import java.text.DecimalFormat;
+
+public class Local {
 
     public static float calcularDistancia(LatLng latLngInicial, LatLng latLngFinal){
         Location localInicial = new Location ("Local inicial");
@@ -19,8 +20,22 @@ class Local {
         //calcula distancia - resultado em metros
         //dividir por 1000 para converter para km
 
-        float distancia = localInicial.distanceTo (localFinal)/1000;
+        float distancia = (localInicial.distanceTo (localFinal))/1000;
 
     return distancia;
+    }
+
+    public static String formatarDistancia (float distancia){
+
+        String distanciaFormatada;
+
+        if (distancia<1){
+            distancia = distancia*1000; //apresentar em metros
+            distanciaFormatada= Math.round (distancia) +" m";
+        }else{
+            DecimalFormat decimal = new DecimalFormat ("0.0");
+            distanciaFormatada = decimal.format (distancia)+ " km";
+        }
+    return distanciaFormatada;
     }
 }
