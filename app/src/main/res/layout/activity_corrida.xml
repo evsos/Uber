@@ -22,6 +22,19 @@
 
     <include layout="@layout/content_passageiro" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabRota"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="6dp"
+        android:layout_marginBottom="66dp"
+        android:src="@drawable/rota"
+        android:visibility="gone"
+        app:backgroundTint="@android:color/holo_orange_dark"
+        app:fabSize="normal"
+        tools:visibility="visible" />
+
     <Button
         android:id="@+id/btnAceitarCorrida"
         android:layout_width="match_parent"

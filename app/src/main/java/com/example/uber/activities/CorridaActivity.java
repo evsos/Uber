@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +34,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -61,6 +63,7 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
     private Marker marcadorPassageiro;
     private String statusRequisicao;
     private Boolean requisicaoActiva;
+    private FloatingActionButton fabRota;
 
 
 
@@ -115,9 +118,11 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
     private void alteraInterfaceConsoanteStatusRequisicao(String status){
 
         switch(status){
-            case Requisicao.STATUS_AGUARDANDO: requisicaoAguardando();
+            case Requisicao.STATUS_AGUARDANDO:
+                requisicaoAguardando();
                 break;
-            case Requisicao.STATUS_CAMINHO:requisicaoCaminho();
+            case Requisicao.STATUS_CAMINHO:
+                requisicaoCaminho();
                 break;
 
         }
@@ -137,6 +142,7 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private void requisicaoCaminho(){
         btnAceitarCorrida.setText ("A caminho do passageiro");
+        fabRota.setVisibility (View.VISIBLE);
 
 
 
@@ -326,12 +332,47 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
             //Configuracoes iniciais
             firebaseRef=FirebaseConfig.getFirebaseDatabase ();
 
-
-
-
-
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager ().findFragmentById (R.id.map);
             mapFragment.getMapAsync (this);
+
+            //Adiciona evento de clique no (Floating Action Button) FabRota
+            fabRota = findViewById (R.id.fabRota);
+            fabRota.setOnClickListener (new View.OnClickListener () {
+                @Override
+                public
+                void onClick (View v) {
+
+                    String status = statusRequisicao;
+                    if (status != null && !status.isEmpty ()){
+
+                    String lat ="";
+                    String lon="";
+
+
+                    switch(status){
+                        case Requisicao.STATUS_CAMINHO:
+                            lat = String.valueOf (localPassageiro.latitude);
+                            lon = String.valueOf (localPassageiro.longitude);
+                            break;
+                       case Requisicao.STATUS_VIAGEM:
+                           // lat = String.valueOf (localDestino.latitude);
+                           // lon = String.valueOf (localDestino.longitude);
+                            break;
+                    }
+                        //se o status for a caminho gerar rota do local do motorista ate ao local do passageiro
+                        String latlong = lat +","+lon;
+                        Uri uri=Uri.parse ("google.navigation:q="+latlong+"&mode=d");
+                        Intent i = new Intent(Intent.ACTION_VIEW, uri);
+                        i.setPackage("com.google.android.apps.maps");
+                        startActivity(i);
+
+
+                    }
+                    //se o status for em viagem, gerar rota do local do passageiro ate ao destino
+                }
+            });
+
+
         }
 
 
