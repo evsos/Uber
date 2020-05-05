@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.uber.R;
 import com.example.uber.config.FirebaseConfig;
+import com.example.uber.helper.Local;
 import com.example.uber.helper.UsuarioFirebase;
 import com.example.uber.model.Destino;
 import com.example.uber.model.Requisicao;
@@ -40,6 +41,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.DecimalFormat;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -189,6 +192,9 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private void requisicaoFinalizada(){
         fabRota.setVisibility (View.GONE);
+
+        requisicaoActiva = false;
+
         if(marcadorMotorista!=null)
             marcadorPassageiro.remove ();
 
@@ -200,7 +206,20 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
         adicionarMarcadorDestino (localDestino,"Destino");
        centralizarMarcador (localDestino);
 
-       btnAceitarCorrida.setText ("Corrida finalizada, €20");
+       //calcular distancia da viagem (unico parametro para calculo de preco),
+        // dada pela distancia do local que estava o passageiro ate ao local de destino
+
+        float distancia = Local.calcularDistancia (localPassageiro,localDestino);
+
+        float valorEuros = (float) (distancia*0.9);
+        DecimalFormat decimal = new DecimalFormat ("0.00");
+        String resultadoEuros = decimal.format(valorEuros);
+
+
+
+
+
+       btnAceitarCorrida.setText ("Corrida finalizada, custo € " + resultadoEuros);
 
     }
     private void centralizarMarcador(LatLng local){
