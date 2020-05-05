@@ -163,7 +163,7 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
         centralizarDoisMarcadores(marcadorMotorista,marcadorPassageiro);
 
         //Inicia monitoramento do motorista/passageiro
-        iniciarMonitoramentoCorrida (passageiro,motorista);
+        iniciarMonitoramento (motorista,localPassageiro,Requisicao.STATUS_VIAGEM);
 
     }
 
@@ -180,31 +180,32 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
         LatLng localDestino = new LatLng (Double.parseDouble (destino.getLatitude ()),Double.parseDouble (destino.getLongitude ()));
         adicionarMarcadorDestino (localDestino,"Destino");
 
-        //centraliza os 2 marcadores no mapa
+      //inicia monitoramento do motorista/passageiro
+        iniciarMonitoramento (motorista,localDestino,Requisicao.STATUS_FINALIZADA);
 
 
 
     }
 
 
-    private void iniciarMonitoramentoCorrida(User p, User m){
+    private void iniciarMonitoramento(final User uOrigem, LatLng localDestino, final String status){
         //inicializar Geofire
         DatabaseReference localUsuario = FirebaseConfig.getFirebaseDatabase ().child ("local_usuario");
         GeoFire geoFire=new GeoFire (localUsuario);
 
         //adicionar circulo no passageiro, quando o carro se aproximar do passageiro, seremos notificados
-        final Circle circulo = mMap.addCircle (new CircleOptions ().center (localPassageiro).radius (50).fillColor(Color.argb (80, 255, 153, 0))
+        final Circle circulo = mMap.addCircle (new CircleOptions ().center (localDestino).radius (50).fillColor(Color.argb (80, 255, 153, 0))
                                                  .strokeColor (Color.argb (190,255,152,0)));
 
-        final GeoQuery geoQuery = geoFire.queryAtLocation (new GeoLocation (localPassageiro.latitude, localPassageiro.longitude), 0.05);
+        final GeoQuery geoQuery = geoFire.queryAtLocation (new GeoLocation (localDestino.latitude, localDestino.longitude), 0.05);
         geoQuery.addGeoQueryEventListener (new GeoQueryEventListener () {
             @Override
             public
             void onKeyEntered (String key, GeoLocation location) {
                 //criterios para um marcador que entrou no circulo
-                if (key.equals (motorista.getId ())) {
+                if (key.equals (uOrigem.getId ())) {
                    //altera status da requisicao
-                    requisicao.setStatus (Requisicao.STATUS_VIAGEM);
+                    requisicao.setStatus (status);
                     requisicao.actualizarStatus ();
 
                     //remove listener
