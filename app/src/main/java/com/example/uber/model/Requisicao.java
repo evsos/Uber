@@ -50,6 +50,18 @@ class Requisicao {
         requisicao.updateChildren (objecto);
     }
 
+    public void actualizarLocalizacaoMotorista(){
+        DatabaseReference firebaseRef = FirebaseConfig.getFirebaseDatabase ();
+        DatabaseReference requisicoes = firebaseRef.child ("requisicoes");
+
+        DatabaseReference requisicao=requisicoes.child(getId ()).child("motorista");
+        Map objecto = new HashMap ();
+        objecto.put("latitude", getMotorista ().getLatitude ());
+        objecto.put("longitude",getMotorista ().getLongitude ());
+
+        requisicao.updateChildren (objecto);
+    }
+
     public void actualizarStatus(){
         DatabaseReference firebaseRef = FirebaseConfig.getFirebaseDatabase ();
         DatabaseReference requisicoes = firebaseRef.child ("requisicoes");

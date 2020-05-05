@@ -290,8 +290,6 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
 
 
         marcadorMotorista = mMap.addMarker (new MarkerOptions ().position (localizacao).title (titulo).icon (BitmapDescriptorFactory.fromResource (R.drawable.carro)));
-
-
     }
 
     private void adicionarMarcadorPassageiro(LatLng localizacao,String titulo){
@@ -381,9 +379,16 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
 
                 UsuarioFirebase.actualizarDadosLocalizacao (latitude,longitude);
 
+                //actualizar localizacao no firebase
+                motorista.setLatitude (String.valueOf (latitude));
+                motorista.setLongitude (String.valueOf (longitude));
+                requisicao.setMotorista (motorista);
+                requisicao.actualizarLocalizacaoMotorista ();
+
                 alteraInterfaceConsoanteStatusRequisicao (statusRequisicao);
 
             }
+
 
             @Override
             public
