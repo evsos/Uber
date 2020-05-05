@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.uber.R;
 import com.example.uber.config.FirebaseConfig;
 import com.example.uber.helper.UsuarioFirebase;
+import com.example.uber.model.Destino;
 import com.example.uber.model.Requisicao;
 import com.example.uber.model.User;
 import com.firebase.geofire.GeoFire;
@@ -61,9 +62,11 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
     private DatabaseReference firebaseRef;
     private Marker  marcadorMotorista;
     private Marker marcadorPassageiro;
+    private Marker marcadorDestino;
     private String statusRequisicao;
     private Boolean requisicaoActiva;
     private FloatingActionButton fabRota;
+    private Destino destino;
 
 
 
@@ -103,6 +106,7 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
 
                 localPassageiro=new LatLng (Double.parseDouble (passageiro.getLatitude ()),Double.parseDouble (passageiro.getLongitude ()));
 
+                destino = requisicao.getDestino ();
                 statusRequisicao=requisicao.getStatus ();
                 alteraInterfaceConsoanteStatusRequisicao (statusRequisicao);
             }
@@ -123,6 +127,9 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
                 break;
             case Requisicao.STATUS_CAMINHO:
                 requisicaoCaminho();
+                break;
+            case Requisicao.STATUS_VIAGEM:
+                requisicaoViagem();
                 break;
 
         }
@@ -159,6 +166,26 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
         iniciarMonitoramentoCorrida (passageiro,motorista);
 
     }
+
+    private void requisicaoViagem(){
+
+        //altera interface
+        fabRota.setVisibility (View.VISIBLE);
+        btnAceitarCorrida.setText ("A caminho do destino");
+
+        //exibe marcador do motorista (apenas)
+        adicionarMarcadorMotorista (localMotorista,motorista.getNome ());
+
+        //exibe marcador do destino
+        LatLng localDestino = new LatLng (Double.parseDouble (destino.getLatitude ()),Double.parseDouble (destino.getLongitude ()));
+        adicionarMarcadorDestino (localDestino,"Destino");
+
+        //centraliza os 2 marcadores no mapa
+
+
+
+    }
+
 
     private void iniciarMonitoramentoCorrida(User p, User m){
         //inicializar Geofire
@@ -233,6 +260,23 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
         marcadorPassageiro = mMap.addMarker (new MarkerOptions ().position (localizacao).title (titulo).icon (BitmapDescriptorFactory.fromResource (R.drawable.usuario)));
 
     }
+
+    private void adicionarMarcadorDestino(LatLng localizacao, String titulo){
+
+        if(marcadorPassageiro!=null)
+            marcadorPassageiro.remove ();
+
+        if(marcadorDestino!=null)
+            marcadorDestino.remove ();
+
+
+        marcadorDestino = mMap.addMarker (new MarkerOptions ().position (localizacao).
+                title (titulo).icon (BitmapDescriptorFactory.fromResource (R.drawable.destino)));
+
+
+    }
+
+
 
     private void centralizarDoisMarcadores(Marker marcador1, Marker marcador2){
 
@@ -355,8 +399,8 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
                             lon = String.valueOf (localPassageiro.longitude);
                             break;
                        case Requisicao.STATUS_VIAGEM:
-                           // lat = String.valueOf (localDestino.latitude);
-                           // lon = String.valueOf (localDestino.longitude);
+                           lat = destino.getLatitude ();
+                           lon = destino.getLongitude ();
                             break;
                     }
                         //se o status for a caminho gerar rota do local do motorista ate ao local do passageiro
