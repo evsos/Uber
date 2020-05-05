@@ -85,8 +85,10 @@ class RequestsActivity extends AppCompatActivity {
             void onDataChange (@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds: dataSnapshot.getChildren ()){
                     Requisicao requisicao=ds.getValue (Requisicao.class);
-                    if(requisicao.getStatus ().equals (Requisicao.STATUS_CAMINHO) || requisicao.getStatus ().equals (Requisicao.STATUS_VIAGEM)){
-                    //fazer com que o usuario va para a corrida activity
+                    if(requisicao.getStatus ().equals (Requisicao.STATUS_CAMINHO) || requisicao.getStatus ().equals (Requisicao.STATUS_VIAGEM)|| requisicao.getStatus ().equals (Requisicao.STATUS_FINALIZADA)){
+
+
+                        //fazer com que o usuario va para a corrida activity
                         motorista=requisicao.getMotorista ();
                         abrirTelaCorrida (requisicao.getId (),motorista,true);
 

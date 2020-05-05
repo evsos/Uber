@@ -131,6 +131,9 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
             case Requisicao.STATUS_VIAGEM:
                 requisicaoViagem();
                 break;
+            case Requisicao.STATUS_FINALIZADA:
+                requisicaoFinalizada();
+                break;
 
         }
 
@@ -143,7 +146,7 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
 
         adicionarMarcadorMotorista(localMotorista,motorista.getNome ());
 
-        mMap.moveCamera (CameraUpdateFactory.newLatLngZoom (localMotorista,20));
+        centralizarMarcador (localMotorista);
 
     }
 
@@ -182,10 +185,30 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
 
       //inicia monitoramento do motorista/passageiro
         iniciarMonitoramento (motorista,localDestino,Requisicao.STATUS_FINALIZADA);
+    }
 
+    private void requisicaoFinalizada(){
+        fabRota.setVisibility (View.GONE);
+        if(marcadorMotorista!=null)
+            marcadorPassageiro.remove ();
 
+        if(marcadorDestino!=null)
+            marcadorDestino.remove ();
+
+        //Exibe marcador de destino
+        LatLng localDestino = new LatLng (Double.parseDouble (destino.getLatitude ()),Double.parseDouble (destino.getLongitude ()));
+        adicionarMarcadorDestino (localDestino,"Destino");
+       centralizarMarcador (localDestino);
+
+       btnAceitarCorrida.setText ("Corrida finalizada, €20");
 
     }
+    private void centralizarMarcador(LatLng local){
+        mMap.moveCamera (CameraUpdateFactory.newLatLngZoom (localMotorista,20));
+    }
+
+
+
 
 
     private void iniciarMonitoramento(final User uOrigem, LatLng localDestino, final String status){
