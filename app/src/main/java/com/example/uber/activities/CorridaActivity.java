@@ -137,27 +137,21 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
             case Requisicao.STATUS_FINALIZADA:
                 requisicaoFinalizada();
                 break;
-
+            case Requisicao.STATUS_CANCELADA:
+                requisicaoCancelada();
+                break;
         }
-
-
-
     }
 
     private void requisicaoAguardando(){
         btnAceitarCorrida.setText ("Aceitar corrida");
-
         adicionarMarcadorMotorista(localMotorista,motorista.getNome ());
-
         centralizarMarcador (localMotorista);
-
     }
 
     private void requisicaoCaminho(){
         btnAceitarCorrida.setText ("A caminho do passageiro");
         fabRota.setVisibility (View.VISIBLE);
-
-
 
         //exibe marcador do motorista
         adicionarMarcadorMotorista(localMotorista,motorista.getNome ());
@@ -185,6 +179,9 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
         //exibe marcador do destino
         LatLng localDestino = new LatLng (Double.parseDouble (destino.getLatitude ()),Double.parseDouble (destino.getLongitude ()));
         adicionarMarcadorDestino (localDestino,"Destino");
+
+        //centraliza os 2 marcadores
+        centralizarDoisMarcadores (marcadorMotorista,marcadorDestino);
 
       //inicia monitoramento do motorista/passageiro
         iniciarMonitoramento (motorista,localDestino,Requisicao.STATUS_FINALIZADA);
@@ -215,13 +212,18 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
         DecimalFormat decimal = new DecimalFormat ("0.00");
         String resultadoEuros = decimal.format(valorEuros);
 
-
-
-
-
        btnAceitarCorrida.setText ("Corrida finalizada, custo € " + resultadoEuros);
 
     }
+
+    private void requisicaoCancelada(){
+
+        Toast.makeText (this, "Requisicao foi cancelada pelo passageiro",Toast.LENGTH_LONG).show ();
+        startActivity (new Intent(CorridaActivity.this, RequestsActivity.class));
+    }
+
+
+
     private void centralizarMarcador(LatLng local){
         mMap.moveCamera (CameraUpdateFactory.newLatLngZoom (localMotorista,20));
     }
@@ -332,7 +334,7 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
 
         int largura = getResources ().getDisplayMetrics ().widthPixels;
         int altura = getResources ().getDisplayMetrics ().heightPixels;
-        int espacoInterno = (int ) (largura*0.20);
+        int espacoInterno = (int ) (largura*0.40);
 
         mMap.moveCamera (CameraUpdateFactory.newLatLngBounds (bounds,largura,altura,espacoInterno));
 
@@ -362,8 +364,7 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
         //recuperar localizacao do usuario
         getUserLocation ();
     }
-    private
-    void getUserLocation () {
+    private void getUserLocation () {
 
         locationManager = (LocationManager) this.getSystemService (Context.LOCATION_SERVICE);
 
@@ -377,6 +378,7 @@ class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
 
                 localMotorista = new LatLng ( latitude, longitude);
 
+                //Actualizar geofire
                 UsuarioFirebase.actualizarDadosLocalizacao (latitude,longitude);
 
                 //actualizar localizacao no firebase

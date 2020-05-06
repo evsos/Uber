@@ -24,6 +24,8 @@ class Requisicao {
     public static final String STATUS_CAMINHO="caminho";
     public static final String STATUS_VIAGEM="viagem";
     public static final String STATUS_FINALIZADA="finalizada";
+    public static final String STATUS_ENCERRADA="encerrada";
+    public static final String STATUS_CANCELADA="cancelada";
 
     public
     Requisicao () {
